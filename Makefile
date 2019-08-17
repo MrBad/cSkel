@@ -1,4 +1,4 @@
-DFLAGS=-DCOMPILE_TESTS
+DFLAGS=
 INCLUDE=.
 LIBS=
 CC=gcc
@@ -9,7 +9,7 @@ MAKE=make
 TARGET=main
 OBJECTS=main.o
 
-all: $(TARGET)
+all: $(TARGET) tester test
 
 $(TARGET): $(OBJECTS) Makefile
 	$(CC) $(CFLAGS) $(DFLAGS) -o $(TARGET) $(OBJECTS) $(LIBS)
@@ -21,5 +21,11 @@ run: $(TARGET) *.o *.c *.h
 	./$(TARGET)
 
 clean:
-	rm -f $(OBJECTS) $(TARGET)
+	rm -f $(OBJECTS) $(TARGET) tester tester.o _main.o
 
+tester: tester.o main.o
+	strip -N main main.o -o _main.o
+	$(CC) -o $@ tester.o _main.o $(LDFLAGS)
+
+test:
+	./tester
